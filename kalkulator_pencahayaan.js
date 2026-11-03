@@ -1,148 +1,126 @@
-const getElement = (id) => document.getElementById(id);
-const getNumber = (id, fallback = 0) =>
-  parseFloat(getElement(id).value) || fallback;
-const formatNumber = (value) => Math.round(value).toLocaleString("id-ID");
-
-const modeButtonClasses = {
-  activeLamps: [
-    "py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all",
-    "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20",
-    "flex items-center justify-center gap-2",
-  ].join(" "),
-  activeWatts: [
-    "py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all",
-    "bg-yellow-500 text-slate-950 shadow-lg shadow-yellow-500/20",
-    "flex items-center justify-center gap-2",
-  ].join(" "),
-  inactive: [
-    "py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all",
-    "text-slate-400 hover:text-white flex items-center justify-center gap-2",
-  ].join(" "),
-};
-
 function switchMode(mode) {
-  const isLampMode = mode === "find-lamps";
+  const btn1 = document.getElementById("mode-btn-1");
+  const btn2 = document.getElementById("mode-btn-2");
+  const sec1 = document.getElementById("section-find-lamps");
+  const sec2 = document.getElementById("section-find-watts");
 
-  document.querySelectorAll("[data-mode]").forEach((button) => {
-    const isActive = button.dataset.mode === mode;
-    button.className = isActive
-      ? isLampMode
-        ? modeButtonClasses.activeLamps
-        : modeButtonClasses.activeWatts
-      : modeButtonClasses.inactive;
+  if (mode === "find-lamps") {
+    btn1.className =
+      "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2";
+    btn1.innerHTML =
+      '<span class="w-4 h-4 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-bold">✓</span> Cari Jumlah Titik Lampu (N)';
 
-    const indicator = button.querySelector("[data-mode-indicator]");
-    indicator.className = isActive
-      ? "w-4 h-4 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-bold"
-      : "w-4 h-4 rounded-full border-2 border-slate-700 flex items-center justify-center text-[10px]";
-    indicator.textContent = isActive ? "✓" : "";
-  });
+    btn2.className =
+      "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2";
+    btn2.innerHTML =
+      '<span class="w-4 h-4 rounded-full border-2 border-slate-700 flex items-center justify-center text-[10px]"></span> Cari Watt / Lumen Lampu (Φ)';
 
-  getElement("section-find-lamps").classList.toggle("hidden", !isLampMode);
-  getElement("section-find-watts").classList.toggle("hidden", isLampMode);
-
-  if (isLampMode) {
+    sec1.classList.remove("hidden");
+    sec2.classList.add("hidden");
     calculateFindLamps();
   } else {
+    btn2.className =
+      "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-yellow-500 text-slate-950 shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2";
+    btn2.innerHTML =
+      '<span class="w-4 h-4 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-bold">✓</span> Cari Watt / Lumen Lampu (Φ)';
+
+    btn1.className =
+      "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2";
+    btn1.innerHTML =
+      '<span class="w-4 h-4 rounded-full border-2 border-slate-700 flex items-center justify-center text-[10px]"></span> Cari Jumlah Titik Lampu (N)';
+
+    sec2.classList.remove("hidden");
+    sec1.classList.add("hidden");
     calculateFindWatts();
   }
 }
 
 function getDynamicCU(area, height) {
-  if (area <= 0) {
-    return 0.75;
-  }
-
-  const effectiveHeight = Math.max(height - 0.8, 1.0);
-  const perimeter = 4 * Math.sqrt(area);
-  const roomCavityRatio = (5 * effectiveHeight * perimeter) / area;
-  const utilizationCoefficient = 0.75 - roomCavityRatio * 0.03;
-
-  return Number(Math.min(0.75, Math.max(0.35, utilizationCoefficient)).toFixed(2));
+  let hEff = Math.max(height - 0.8, 1.0);
+  let perimeter = 4 * Math.sqrt(area);
+  let rcr = (5 * hEff * perimeter) / area;
+  let baseCU = 0.75 - rcr * 0.03;
+  if (baseCU < 0.35) baseCU = 0.35;
+  if (baseCU > 0.75) baseCU = 0.75;
+  return parseFloat(baseCU.toFixed(2));
 }
 
 function calculateFindLamps() {
-  const area = getNumber("l1-area");
-  const height = getNumber("l1-height", 3);
-  const lux = getNumber("l1-lux-select", 300);
-  const lumenPerLamp = getNumber("l1-lumen", 1500);
-  const lightLossFactor = getNumber("l1-llf", 0.8);
-  const utilizationCoefficient = getDynamicCU(area, height);
+  let area = parseFloat(document.getElementById("l1-area").value) || 0;
+  let height = parseFloat(document.getElementById("l1-height").value) || 3.0;
+  let lux = parseFloat(document.getElementById("l1-lux-select").value) || 300;
+  let lumenPerLamp =
+    parseFloat(document.getElementById("l1-lumen").value) || 1500;
 
-  getElement("l1-cu").value = utilizationCoefficient;
+  let useFactors = document.getElementById("l1-use-factors").checked;
+  let factorsBox = document.getElementById("l1-factors-box");
 
-  const totalLumenRequired = lux * area;
-  const effectiveLumenPerLamp =
-    lumenPerLamp * lightLossFactor * utilizationCoefficient;
-  const lampCount = Math.max(
-    1,
-    Math.ceil(
-      effectiveLumenPerLamp > 0
-        ? totalLumenRequired / effectiveLumenPerLamp
-        : 0,
-    ),
-  );
-  const gridLayouts = {
-    4: "4 Titik Lampu (Grid 2x2)",
-    6: "6 Titik Lampu (Grid 2x3)",
-    9: "9 Titik Lampu (Grid 3x3)",
-  };
-  const gridDescription =
-    gridLayouts[lampCount] ?? `${lampCount} Titik Lampu (Sebar Merata)`;
-  const ceilingNote =
-    height > 3.5
-      ? "⚠️ Plafon tinggi (>3.5m): Cahaya meredup saat sampai di lantai, pertimbangkan sudut sorot lampu yang lebih sempit."
-      : "✅ Ketinggian plafon dalam batas normal/standar.";
+  let llf = 1.0;
+  let cu = 1.0;
 
-  getElement("l1-res-lumen").textContent =
-    `${formatNumber(totalLumenRequired)} Lumen`;
-  getElement("l1-res-lamps").textContent = `${lampCount} Titik Lampu`;
-  getElement("l1-res-grid").textContent = gridDescription;
-  getElement("l1-res-note").textContent = ceilingNote;
+  if (useFactors) {
+    factorsBox.classList.remove("opacity-40", "pointer-events-none");
+    llf = parseFloat(document.getElementById("l1-llf").value) || 0.8;
+    cu = getDynamicCU(area, height);
+    document.getElementById("l1-cu").value = cu;
+  } else {
+    factorsBox.classList.add("opacity-40", "pointer-events-none");
+  }
+
+  let totalLumenRequired = lux * area;
+  let denominator = lumenPerLamp * llf * cu;
+  let lampsCount = denominator > 0 ? totalLumenRequired / denominator : 0;
+  let finalLamps = Math.ceil(lampsCount);
+  if (finalLamps < 1) finalLamps = 1;
+
+  let gridText = `${finalLamps} Titik Lampu (Sebar Merata)`;
+  if (finalLamps === 4) gridText = `4 Titik Lampu (Grid 2x2)`;
+  else if (finalLamps === 6) gridText = `6 Titik Lampu (Grid 2x3)`;
+  else if (finalLamps === 9) gridText = `9 Titik Lampu (Grid 3x3)`;
+
+  document.getElementById("l1-res-lumen").innerText =
+    Math.round(totalLumenRequired).toLocaleString("id-ID") + " Lumen";
+  document.getElementById("l1-res-lamps").innerText =
+    finalLamps + " Titik Lampu";
+  document.getElementById("l1-res-grid").innerText = gridText;
 }
 
 function calculateFindWatts() {
-  const area = getNumber("l2-area");
-  const height = getNumber("l2-height", 3);
-  const lux = getNumber("l2-lux", 300);
-  const lampCount = getNumber("l2-lamps", 1);
-  const lightLossFactor = getNumber("l2-llf", 0.8);
-  const utilizationCoefficient = getDynamicCU(area, height);
+  let area = parseFloat(document.getElementById("l2-area").value) || 0;
+  let height = parseFloat(document.getElementById("l2-height").value) || 3.0;
+  let lux = parseFloat(document.getElementById("l2-lux").value) || 300;
+  let lamps = parseFloat(document.getElementById("l2-lamps").value) || 1;
 
-  getElement("l2-cu").value = utilizationCoefficient;
+  let useFactors = document.getElementById("l2-use-factors").checked;
+  let factorsBox = document.getElementById("l2-factors-box");
 
-  const totalLumenRequired = lux * area;
-  const effectiveLampCount = lampCount * lightLossFactor * utilizationCoefficient;
-  const lumenPerLamp =
-    effectiveLampCount > 0 ? totalLumenRequired / effectiveLampCount : 0;
-  const estimatedWatts = lumenPerLamp / 100;
+  let llf = 1.0;
+  let cu = 1.0;
 
-  getElement("l2-res-total-lumen").textContent =
-    `${formatNumber(totalLumenRequired)} Lumen`;
-  getElement("l2-res-lumen-per-lamp").textContent =
-    `${formatNumber(lumenPerLamp)} Lumen`;
-  getElement("l2-res-watt").textContent =
-    `± ${Math.round(estimatedWatts)} Watt per lampu`;
+  if (useFactors) {
+    factorsBox.classList.remove("opacity-40", "pointer-events-none");
+    llf = parseFloat(document.getElementById("l2-llf").value) || 0.8;
+    cu = getDynamicCU(area, height);
+    document.getElementById("l2-cu").value = cu;
+  } else {
+    factorsBox.classList.add("opacity-40", "pointer-events-none");
+  }
+
+  let totalLumenRequired = lux * area;
+  let denominator = lamps * llf * cu;
+  let lumenPerLamp = denominator > 0 ? totalLumenRequired / denominator : 0;
+
+  // Disesuaikan ke standar efisiensi LED (±96 Lumen per Watt agar sinkron dengan acuan Zhitov)
+  let estimatedWatts = lumenPerLamp / 96;
+
+  document.getElementById("l2-res-total-lumen").innerText =
+    Math.round(totalLumenRequired).toLocaleString("id-ID") + " Lumen";
+  document.getElementById("l2-res-lumen-per-lamp").innerText =
+    Math.round(lumenPerLamp).toLocaleString("id-ID") + " Lumen";
+  document.getElementById("l2-res-watt").innerText =
+    `± ${Math.round(estimatedWatts)} Watt per lampu (LED)`;
 }
 
-document.querySelectorAll("[data-mode]").forEach((button) => {
-  button.addEventListener("click", () => switchMode(button.dataset.mode));
-});
-document.querySelectorAll("[data-calculator]").forEach((input) => {
-  input.addEventListener("input", () => {
-    if (input.dataset.calculator === "find-lamps") {
-      calculateFindLamps();
-    } else {
-      calculateFindWatts();
-    }
-  });
-  input.addEventListener("change", () => {
-    if (input.dataset.calculator === "find-lamps") {
-      calculateFindLamps();
-    } else {
-      calculateFindWatts();
-    }
-  });
-});
-
-calculateFindLamps();
+window.onload = function () {
+  calculateFindLamps();
+};
