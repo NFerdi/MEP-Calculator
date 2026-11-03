@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id" class="h-screen overflow-hidden">
+<html lang="id" class="min-h-full md:h-screen md:overflow-hidden">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,23 +27,44 @@
     </style>
   </head>
   <body
-    class="bg-slate-950 text-slate-100 font-sans h-screen overflow-hidden flex flex-col md:flex-row"
+    class="bg-slate-950 text-slate-100 font-sans min-h-screen md:h-screen md:overflow-hidden flex flex-col md:flex-row"
   >
     <!-- SIDEBAR NAVIGASI -->
     <aside
-      class="w-full md:w-64 bg-slate-900 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0 h-auto md:h-screen"
+      class="w-full md:w-64 bg-slate-900 border-r border-slate-800 p-4 md:p-6 flex flex-col justify-between shrink-0 h-auto md:h-screen"
     >
-      <div class="space-y-6">
-        <div>
+      <div class="space-y-4 md:space-y-6">
+        <div class="flex items-center justify-between md:block">
           <h2
             class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500"
           >
             MEP Kalkulator
           </h2>
+          <button
+            type="button"
+            id="mobile-nav-toggle"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors md:hidden"
+            aria-label="Buka navigasi"
+            aria-expanded="false"
+            aria-controls="primary-navigation"
+            onclick="toggleMobileNav()"
+          >
+            <svg
+              class="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
         </div>
 
         <!-- Menu Navigasi -->
-        <nav class="space-y-2">
+        <nav id="primary-navigation" class="hidden md:flex md:flex-col space-y-2">
           <a
             href="ac.html"
             class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white transition-all"
@@ -68,7 +89,7 @@
 
     <!-- KONTEN UTAMA WRAPPER (Flex-1 & Overflow Hidden agar layout terkunci pas di layar) -->
     <main
-      class="flex-1 h-full overflow-hidden flex flex-col max-w-5xl mx-auto w-full p-6 md:p-8"
+      class="flex-1 md:min-h-0 md:h-full overflow-visible md:overflow-hidden flex flex-col max-w-5xl mx-auto w-full p-4 sm:p-6 md:p-8"
     >
       <!-- HEADER HALAMAN -->
       <header class="space-y-1 shrink-0 pb-4 border-b border-slate-800/80 mb-4">
@@ -113,15 +134,15 @@
       </div>
 
       <!-- KONTEN GRID UTAMA (Bagi dua kolom, tinggi fleksibel, tanpa terpotong) -->
-      <div class="flex-1 overflow-hidden pb-6">
+      <div class="flex-1 md:min-h-0 overflow-visible md:overflow-hidden pb-6">
         <!-- ================= SECTION A: CARI JUMLAH TITIK LAMPU ================= -->
         <section
           id="section-find-lamps"
-          class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-hidden"
+          class="grid grid-cols-1 md:grid-cols-2 gap-6 md:h-full overflow-visible md:overflow-hidden"
         >
           <!-- Form Input Mode 1 (Bisa di-scroll tanpa scrollbar) -->
           <div
-            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl overflow-y-auto no-scrollbar h-full"
+            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl overflow-visible md:overflow-y-auto no-scrollbar md:h-full"
           >
             <h3
               class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2.5"
@@ -245,7 +266,7 @@
 
           <!-- Hasil Output Mode 1 (Fixed tinggi, pas tanpa terpotong) -->
           <div
-            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between shadow-xl space-y-4 h-full overflow-hidden"
+            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between shadow-xl space-y-4 md:h-full overflow-visible md:overflow-hidden"
           >
             <div class="space-y-3">
               <h3
@@ -308,11 +329,11 @@
         <!-- ================= SECTION B: CARI WATT / LUMEN LAMPU ================= -->
         <section
           id="section-find-watts"
-          class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 h-full overflow-hidden"
+          class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 md:h-full overflow-visible md:overflow-hidden"
         >
           <!-- Form Input Mode 2 (Bisa di-scroll tanpa scrollbar) -->
           <div
-            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl overflow-y-auto no-scrollbar h-full"
+            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl overflow-visible md:overflow-y-auto no-scrollbar md:h-full"
           >
             <h3
               class="text-sm font-bold text-yellow-400 border-b border-slate-800 pb-2.5"
@@ -430,7 +451,7 @@
 
           <!-- Hasil Output Mode 2 (Fixed tinggi, pas tanpa terpotong) -->
           <div
-            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between shadow-xl space-y-4 h-full overflow-hidden"
+            class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between shadow-xl space-y-4 md:h-full overflow-visible md:overflow-hidden"
           >
             <div class="space-y-3">
               <h3
@@ -494,6 +515,20 @@
       </div>
     </main>
 
+    <script>
+      function toggleMobileNav() {
+        const button = document.getElementById("mobile-nav-toggle");
+        const navigation = document.getElementById("primary-navigation");
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+
+        button.setAttribute("aria-expanded", String(!isExpanded));
+        button.setAttribute(
+          "aria-label",
+          isExpanded ? "Buka navigasi" : "Tutup navigasi",
+        );
+        navigation.classList.toggle("hidden", isExpanded);
+      }
+    </script>
     <script src="kalkulator_pencahayaan.js"></script>
   </body>
 </html>
