@@ -64,7 +64,10 @@
         </div>
 
         <!-- Menu Navigasi -->
-        <nav id="primary-navigation" class="hidden md:flex md:flex-col space-y-2">
+        <nav
+          id="primary-navigation"
+          class="hidden md:flex md:flex-col space-y-2"
+        >
           <a
             href="ac.html"
             class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white transition-all"
@@ -373,13 +376,19 @@
               <label class="block text-xs font-medium text-slate-300"
                 >Target Kuat Cahaya (Lux)</label
               >
-              <input
-                type="number"
+              <select
                 id="l2-lux"
-                value="300"
-                oninput="calculateFindWatts()"
-                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-yellow-500"
-              />
+                onchange="calculateFindWatts()"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
+              >
+                <option value="150">
+                  Kamar Tidur / Ruang Keluarga (150 Lux)
+                </option>
+                <option value="300" selected>
+                  Ruang Kerja / Kantor / Kelas (300 Lux)
+                </option>
+                <option value="500">Ruang Desain / Drafting (500 Lux)</option>
+              </select>
             </div>
 
             <div class="space-y-1.5">
