@@ -170,24 +170,32 @@ function calculate() {
   getElement("breakdown-safety").textContent = `+${safetyPercent}%`;
 }
 
-document.querySelectorAll("[data-area-method]").forEach((button) => {
-  button.addEventListener("click", () => setAreaMethod(button.dataset.areaMethod));
-});
-document.querySelectorAll("[data-calculate]").forEach((input) => {
-  input.addEventListener("input", calculate);
-  input.addEventListener("change", calculate);
-});
-getElement("slider-safety-ac").addEventListener("input", () => {
-  updateSafetyLabel();
-  calculate();
-});
-getElement("slider-cos-phi").addEventListener("input", () => {
-  updateCosPhiLabel();
-  calculate();
-});
-document
-  .querySelector("[data-add-human-row]")
-  .addEventListener("click", addHumanRow);
+window.initAcCalculator = function initAcCalculator() {
+  if (!getElement("input-m2")) return;
 
-renderHumanRows();
-calculate();
+  document.querySelectorAll("[data-area-method]").forEach((button) => {
+    button.addEventListener("click", () =>
+      setAreaMethod(button.dataset.areaMethod),
+    );
+  });
+  document.querySelectorAll("[data-calculate]").forEach((input) => {
+    input.addEventListener("input", calculate);
+    input.addEventListener("change", calculate);
+  });
+  getElement("slider-safety-ac").addEventListener("input", () => {
+    updateSafetyLabel();
+    calculate();
+  });
+  getElement("slider-cos-phi").addEventListener("input", () => {
+    updateCosPhiLabel();
+    calculate();
+  });
+  document
+    .querySelector("[data-add-human-row]")
+    .addEventListener("click", addHumanRow);
+
+  renderHumanRows();
+  calculate();
+};
+
+window.initAcCalculator();

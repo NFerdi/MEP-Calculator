@@ -64,28 +64,29 @@
         </div>
 
         <!-- Menu Navigasi -->
-        <nav
-          id="primary-navigation"
-          class="hidden md:flex md:flex-col space-y-2"
-        >
+        <nav id="primary-navigation" class="hidden md:flex md:flex-col space-y-2">
           <a
-            href="ac.html"
+            href="index.html#ac"
             class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white transition-all"
           >
             <span>❄️</span> Kalkulator AC & MCB
           </a>
           <a
-            href="pencahayaan.html"
+            href="index.html#pencahayaan"
             class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 transition-all"
           >
             <span>💡</span> Kalkulator Cahaya
           </a>
+          <a
+            href="index.html#air-bersih"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white transition-all"
+          >
+            <span>💧</span> Kalkulator Air Bersih
+          </a>
         </nav>
       </div>
 
-      <div
-        class="text-xs text-slate-500 pt-6 border-t border-slate-800 hidden md:block"
-      >
+      <div class="text-xs text-slate-500 pt-6 border-t border-slate-800 hidden md:block">
         &copy; 2026 MEP Engineering Studio
       </div>
     </aside>
@@ -96,14 +97,11 @@
     >
       <!-- HEADER HALAMAN -->
       <header class="space-y-1 shrink-0 pb-4 border-b border-slate-800/80 mb-4">
-        <h1
-          class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3"
-        >
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
           <span>💡</span> Kalkulator Pencahayaan (Metode Lumen)
         </h1>
         <p class="text-slate-400 text-xs md:text-sm">
-          Tentukan jumlah titik lampu ideal atau cari besaran Watt lampu
-          berdasarkan standar Lux ruangan.
+          Tentukan jumlah titik lampu ideal atau cari besaran Watt lampu berdasarkan standar Lux ruangan.
         </p>
       </header>
 
@@ -147,17 +145,13 @@
           <div
             class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl overflow-visible md:overflow-y-auto no-scrollbar md:h-full"
           >
-            <h3
-              class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2.5"
-            >
+            <h3 class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2.5">
               Parameter Ruangan & Spesifikasi Lampu
             </h3>
 
             <div class="grid grid-cols-2 gap-3">
               <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300"
-                  >Luas Ruangan (m²)</label
-                >
+                <label class="block text-xs font-medium text-slate-300">Luas Ruangan (m²)</label>
                 <input
                   type="number"
                   id="l1-area"
@@ -167,9 +161,7 @@
                 />
               </div>
               <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300"
-                  >Tinggi Plafon (m)</label
-                >
+                <label class="block text-xs font-medium text-slate-300">Tinggi Plafon (m)</label>
                 <input
                   type="number"
                   step="0.1"
@@ -182,28 +174,20 @@
             </div>
 
             <div class="space-y-1.5">
-              <label class="block text-xs font-medium text-slate-300"
-                >Target Kuat Cahaya (Lux)</label
-              >
+              <label class="block text-xs font-medium text-slate-300">Target Kuat Cahaya (Lux)</label>
               <select
                 id="l1-lux-select"
                 onchange="calculateFindLamps()"
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
               >
-                <option value="150">
-                  Kamar Tidur / Ruang Keluarga (150 Lux)
-                </option>
-                <option value="300" selected>
-                  Ruang Kerja / Kantor / Kelas (300 Lux)
-                </option>
+                <option value="150">Kamar Tidur / Ruang Keluarga (150 Lux)</option>
+                <option value="300" selected>Ruang Kerja / Kantor / Kelas (300 Lux)</option>
                 <option value="500">Ruang Desain / Drafting (500 Lux)</option>
               </select>
             </div>
 
             <div class="space-y-1.5">
-              <label class="block text-xs font-medium text-slate-300"
-                >Keluaran Cahaya per Lampu (Lumen)</label
-              >
+              <label class="block text-xs font-medium text-slate-300">Keluaran Cahaya per Lampu (Lumen)</label>
               <input
                 type="number"
                 id="l1-lumen"
@@ -214,18 +198,12 @@
             </div>
 
             <!-- Checkbox untuk Menonaktifkan Faktor CU & LLF -->
-            <div
-              class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between"
-            >
+            <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
               <div>
-                <label
-                  for="l1-use-factors"
-                  class="text-xs font-medium text-slate-200 cursor-pointer"
+                <label for="l1-use-factors" class="text-xs font-medium text-slate-200 cursor-pointer"
                   >Gunakan Faktor CU & LLF</label
                 >
-                <p class="text-[10px] text-slate-400">
-                  Nonaktifkan untuk hasil murni tanpa koreksi rugi
-                </p>
+                <p class="text-[10px] text-slate-400">Nonaktifkan untuk hasil murni tanpa koreksi rugi</p>
               </div>
               <input
                 type="checkbox"
@@ -239,8 +217,7 @@
             <div class="grid grid-cols-2 gap-3" id="l1-factors-box">
               <div class="space-y-1.5">
                 <label class="block text-xs font-medium text-slate-300"
-                  >Faktor Refleksi (CU)
-                  <span class="text-[10px] text-amber-400">*Auto</span></label
+                  >Faktor Refleksi (CU) <span class="text-[10px] text-amber-400">*Auto</span></label
                 >
                 <input
                   type="number"
@@ -252,9 +229,7 @@
                 />
               </div>
               <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300"
-                  >Faktor Rugi (LLF)</label
-                >
+                <label class="block text-xs font-medium text-slate-300">Faktor Rugi (LLF)</label>
                 <input
                   type="number"
                   step="0.05"
@@ -272,59 +247,34 @@
             class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between shadow-xl space-y-4 md:h-full overflow-visible md:overflow-hidden"
           >
             <div class="space-y-3">
-              <h3
-                class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2.5"
-              >
+              <h3 class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2.5">
                 Hasil Analisis Kebutuhan Lampu
               </h3>
 
-              <div
-                class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60"
-              >
-                <span
-                  class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold"
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold"
                   >Total Lumen Ruangan</span
                 >
-                <div
-                  class="text-xl md:text-2xl font-black text-white mt-0.5"
-                  id="l1-res-lumen"
-                >
-                  0 Lumen
-                </div>
+                <div class="text-xl md:text-2xl font-black text-white mt-0.5" id="l1-res-lumen">0 Lumen</div>
               </div>
 
               <div
                 class="bg-gradient-to-br from-amber-950/40 to-yellow-950/40 p-3.5 rounded-xl border border-amber-500/30"
               >
-                <span
-                  class="text-[11px] text-amber-300 uppercase tracking-wider font-semibold"
+                <span class="text-[11px] text-amber-300 uppercase tracking-wider font-semibold"
                   >Jumlah Titik Lampu ($N$)</span
                 >
-                <div
-                  class="text-3xl font-black text-amber-400 mt-0.5"
-                  id="l1-res-lamps"
-                >
-                  0 Titik
-                </div>
+                <div class="text-3xl font-black text-amber-400 mt-0.5" id="l1-res-lamps">0 Titik</div>
               </div>
 
-              <div
-                class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60 space-y-0.5"
-              >
-                <span class="text-[11px] text-slate-400 block font-semibold"
-                  >Saran Tata Letak Plafon</span
-                >
-                <span class="text-sm font-bold text-slate-200" id="l1-res-grid"
-                  >-</span
-                >
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60 space-y-0.5">
+                <span class="text-[11px] text-slate-400 block font-semibold">Saran Tata Letak Plafon</span>
+                <span class="text-sm font-bold text-slate-200" id="l1-res-grid">-</span>
               </div>
             </div>
 
-            <div
-              class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 shrink-0"
-            >
-              📌 Menggunakan metode Lumen dengan penyesuaian rasio tinggi
-              plafon.
+            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 shrink-0">
+              📌 Menggunakan metode Lumen dengan penyesuaian rasio tinggi plafon.
             </div>
           </div>
         </section>
@@ -338,17 +288,13 @@
           <div
             class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4 shadow-xl overflow-visible md:overflow-y-auto no-scrollbar md:h-full"
           >
-            <h3
-              class="text-sm font-bold text-yellow-400 border-b border-slate-800 pb-2.5"
-            >
+            <h3 class="text-sm font-bold text-yellow-400 border-b border-slate-800 pb-2.5">
               Parameter Ruangan & Titik Lampu Tersedia
             </h3>
 
             <div class="grid grid-cols-2 gap-3">
               <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300"
-                  >Luas Ruangan (m²)</label
-                >
+                <label class="block text-xs font-medium text-slate-300">Luas Ruangan (m²)</label>
                 <input
                   type="number"
                   id="l2-area"
@@ -358,9 +304,7 @@
                 />
               </div>
               <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300"
-                  >Tinggi Plafon (m)</label
-                >
+                <label class="block text-xs font-medium text-slate-300">Tinggi Plafon (m)</label>
                 <input
                   type="number"
                   step="0.1"
@@ -373,28 +317,20 @@
             </div>
 
             <div class="space-y-1.5">
-              <label class="block text-xs font-medium text-slate-300"
-                >Target Kuat Cahaya (Lux)</label
-              >
+              <label class="block text-xs font-medium text-slate-300">Target Kuat Cahaya (Lux)</label>
               <select
                 id="l2-lux"
                 onchange="calculateFindWatts()"
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
               >
-                <option value="150">
-                  Kamar Tidur / Ruang Keluarga (150 Lux)
-                </option>
-                <option value="300" selected>
-                  Ruang Kerja / Kantor / Kelas (300 Lux)
-                </option>
+                <option value="150">Kamar Tidur / Ruang Keluarga (150 Lux)</option>
+                <option value="300" selected>Ruang Kerja / Kantor / Kelas (300 Lux)</option>
                 <option value="500">Ruang Desain / Drafting (500 Lux)</option>
               </select>
             </div>
 
             <div class="space-y-1.5">
-              <label class="block text-xs font-medium text-slate-300"
-                >Jumlah Titik Lampu Terpasang ($N$)</label
-              >
+              <label class="block text-xs font-medium text-slate-300">Jumlah Titik Lampu Terpasang ($N$)</label>
               <input
                 type="number"
                 id="l2-lamps"
@@ -405,18 +341,12 @@
             </div>
 
             <!-- Checkbox untuk Menonaktifkan Faktor CU & LLF -->
-            <div
-              class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between"
-            >
+            <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
               <div>
-                <label
-                  for="l2-use-factors"
-                  class="text-xs font-medium text-slate-200 cursor-pointer"
+                <label for="l2-use-factors" class="text-xs font-medium text-slate-200 cursor-pointer"
                   >Gunakan Faktor CU & LLF</label
                 >
-                <p class="text-[10px] text-slate-400">
-                  Nonaktifkan untuk hasil murni tanpa koreksi rugi
-                </p>
+                <p class="text-[10px] text-slate-400">Nonaktifkan untuk hasil murni tanpa koreksi rugi</p>
               </div>
               <input
                 type="checkbox"
@@ -430,8 +360,7 @@
             <div class="grid grid-cols-2 gap-3" id="l2-factors-box">
               <div class="space-y-1.5">
                 <label class="block text-xs font-medium text-slate-300"
-                  >Faktor Refleksi (CU)
-                  <span class="text-[10px] text-yellow-400">*Auto</span></label
+                  >Faktor Refleksi (CU) <span class="text-[10px] text-yellow-400">*Auto</span></label
                 >
                 <input
                   type="number"
@@ -443,9 +372,7 @@
                 />
               </div>
               <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300"
-                  >Faktor Rugi (LLF)</label
-                >
+                <label class="block text-xs font-medium text-slate-300">Faktor Rugi (LLF)</label>
                 <input
                   type="number"
                   step="0.05"
@@ -463,61 +390,36 @@
             class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between shadow-xl space-y-4 md:h-full overflow-visible md:overflow-hidden"
           >
             <div class="space-y-3">
-              <h3
-                class="text-sm font-bold text-yellow-400 border-b border-slate-800 pb-2.5"
-              >
+              <h3 class="text-sm font-bold text-yellow-400 border-b border-slate-800 pb-2.5">
                 Hasil Analisis Kekuatan Lampu
               </h3>
 
-              <div
-                class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60"
-              >
-                <span
-                  class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold"
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold"
                   >Total Lumen yang Dibutuhkan</span
                 >
-                <div
-                  class="text-xl md:text-2xl font-black text-white mt-0.5"
-                  id="l2-res-total-lumen"
-                >
-                  0 Lumen
-                </div>
+                <div class="text-xl md:text-2xl font-black text-white mt-0.5" id="l2-res-total-lumen">0 Lumen</div>
               </div>
 
               <div
                 class="bg-gradient-to-br from-yellow-950/40 to-amber-950/40 p-3.5 rounded-xl border border-yellow-500/30"
               >
-                <span
-                  class="text-[11px] text-yellow-300 uppercase tracking-wider font-semibold"
+                <span class="text-[11px] text-yellow-300 uppercase tracking-wider font-semibold"
                   >Lumen per 1 Buah Lampu ($\Phi$)</span
                 >
-                <div
-                  class="text-2xl md:text-3xl font-black text-yellow-400 mt-0.5"
-                  id="l2-res-lumen-per-lamp"
-                >
+                <div class="text-2xl md:text-3xl font-black text-yellow-400 mt-0.5" id="l2-res-lumen-per-lamp">
                   0 Lumen
                 </div>
               </div>
 
-              <div
-                class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60"
-              >
-                <span class="text-[11px] text-slate-400 block font-semibold"
-                  >Estimasi Kebutuhan Daya (Watt)</span
-                >
-                <span
-                  class="text-lg font-bold text-emerald-400"
-                  id="l2-res-watt"
-                  >-</span
-                >
+              <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800/60">
+                <span class="text-[11px] text-slate-400 block font-semibold">Estimasi Kebutuhan Daya (Watt)</span>
+                <span class="text-lg font-bold text-emerald-400" id="l2-res-watt">-</span>
               </div>
             </div>
 
-            <div
-              class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 shrink-0"
-            >
-              📌 Asumsi efisiensi LED standar ±96 Lumen/Watt (disesuaikan dengan
-              kalkulator industri).
+            <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-400 shrink-0">
+              📌 Asumsi efisiensi LED standar ±96 Lumen/Watt (disesuaikan dengan kalkulator industri).
             </div>
           </div>
         </section>
@@ -531,10 +433,7 @@
         const isExpanded = button.getAttribute("aria-expanded") === "true";
 
         button.setAttribute("aria-expanded", String(!isExpanded));
-        button.setAttribute(
-          "aria-label",
-          isExpanded ? "Buka navigasi" : "Tutup navigasi",
-        );
+        button.setAttribute("aria-label", isExpanded ? "Buka navigasi" : "Tutup navigasi");
         navigation.classList.toggle("hidden", isExpanded);
       }
     </script>

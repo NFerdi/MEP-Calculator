@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id" class="min-h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Kalkulator MEP untuk kebutuhan AC, pencahayaan, air bersih, dan air kotor." />
+    <title>MEP Kalkulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+      tailwind.config = {
+        theme: { extend: { fontFamily: { sans: ["Inter", "sans-serif"] } } },
+      };
+    </script>
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-slate-950 font-sans text-slate-100 md:flex md:h-screen md:overflow-hidden"
+    x-data="calculatorApp"
+    x-init="init()"
+  >
+    <aside class="w-full shrink-0 border-r border-slate-800 bg-slate-900 p-4 md:h-screen md:w-64 md:p-6">
+      <div class="flex items-center justify-between md:block">
+        <a
+          href="#ac"
+          class="bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-xl font-extrabold text-transparent"
+          >MEP Kalkulator</a
+        >
+        <button
+          type="button"
+          class="rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300 md:hidden"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+          :aria-expanded="mobileMenuOpen"
+          aria-label="Buka navigasi"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+      <nav
+        class="mt-5 space-y-2"
+        :class="mobileMenuOpen ? 'block' : 'hidden md:block'"
+        aria-label="Navigasi kalkulator"
+      >
+        <template x-for="item in pages" :key="item.id">
+          <a
+            :href="'#' + item.id"
+            @click.prevent="navigate(item.id)"
+            class="flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-all"
+            :class="activePage === item.id ? 'border-amber-500/30 bg-amber-500/10 font-semibold text-amber-400' : 'border-transparent font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white'"
+            :aria-current="activePage === item.id ? 'page' : null"
+          >
+            <span x-text="item.icon" aria-hidden="true"></span>
+            <span x-text="item.label"></span>
+          </a>
+        </template>
+      </nav>
+    </aside>
+
+    <div class="min-w-0 flex-1 md:h-screen md:min-h-0">
+      <div x-cloak x-show="loading" class="mx-auto max-w-5xl p-8 text-sm text-slate-400" role="status">
+        Memuat kalkulator...
+      </div>
+      <div x-cloak x-show="error" class="mx-auto max-w-5xl p-8 text-sm text-rose-300" role="alert" x-text="error"></div>
+      <main
+        x-ref="pageContent"
+        class="mx-auto flex w-full max-w-5xl flex-col p-4 sm:p-6 md:h-full md:min-h-0 md:overflow-hidden md:p-8"
+        :class="loading || error ? 'hidden' : ''"
+      ></main>
+    </div>
+
+    <script defer src="kalkulator_ac.js"></script>
+    <script defer src="kalkulator_pencahayaan.js"></script>
+    <script defer src="kalkulator_air_shared.js"></script>
+    <script defer src="kalkulator_air_bersih.js"></script>
+    <script defer src="kalkulator_air_kotor.js"></script>
+    <script defer src="app.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  </body>
+</html>

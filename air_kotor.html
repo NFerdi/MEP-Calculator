@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="id" class="min-h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulator Air Kotor | MEP Kalkulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 font-sans text-slate-100">
+    <main class="mx-auto flex w-full max-w-5xl flex-col p-4 sm:p-6 md:h-full md:min-h-0 md:p-8">
+      <header class="mb-4 shrink-0 space-y-1 border-b border-slate-800/80 pb-4">
+        <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600">♻️</span>
+          Kalkulator Air Kotor
+        </h1>
+        <p class="text-xs text-slate-400 md:text-sm">
+          Estimasi debit air limbah domestik dari kebutuhan air bangunan.
+        </p>
+      </header>
+
+      <section
+        x-data="wastewaterCalculator"
+        class="grid grid-cols-1 gap-6 md:min-h-0 md:flex-1 md:grid-cols-2"
+      >
+        <div class="no-scrollbar space-y-5 rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl md:h-full md:overflow-y-auto">
+          <h2 class="border-b border-slate-800 pb-3 text-sm font-bold text-emerald-400">
+            Parameter Estimasi Air Limbah
+          </h2>
+          <label class="block space-y-2 text-sm font-medium text-slate-300">
+            Tipe bangunan
+            <select
+              x-model="buildingType"
+              @change="applyProfile()"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white focus:border-emerald-500 focus:outline-none"
+            >
+              <template x-for="profile in profiles" :key="profile.id">
+                <option :value="profile.id" x-text="profile.name"></option>
+              </template>
+            </select>
+          </label>
+          <p
+            class="rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-3 text-xs leading-relaxed text-emerald-100/80"
+            x-text="profileDescription"
+          ></p>
+          <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-sm text-slate-300">
+            <input
+              type="checkbox"
+              x-model="useProfileConsumption"
+              @change="toggleProfileConsumption()"
+              class="mt-0.5 h-4 w-4 accent-emerald-500"
+            />
+            <span>
+              <span class="block font-medium text-slate-200">Ikuti tarif tipe bangunan (otomatis)</span>
+              <span class="mt-1 block text-xs text-slate-400">Lepas centang untuk mengisi konsumsi secara manual.</span>
+            </span>
+          </label>
+          <label class="block space-y-2 text-sm font-medium text-slate-300">
+            Jumlah penghuni / pengguna per hari
+            <div class="relative">
+              <input
+                type="number"
+                min="0"
+                step="1"
+                x-model.number="occupants"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-16 text-white focus:border-emerald-500 focus:outline-none"
+              />
+              <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">orang</span>
+            </div>
+          </label>
+          <label class="block space-y-2 text-sm font-medium text-slate-300">
+            Kebutuhan air bersih per orang per hari
+            <div class="relative">
+              <input
+                type="number"
+                min="0"
+                step="10"
+                x-model.number="consumption"
+                :disabled="useProfileConsumption"
+                :class="useProfileConsumption ? 'cursor-not-allowed opacity-60' : ''"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-16 text-white focus:border-emerald-500 focus:outline-none disabled:focus:border-slate-700"
+              />
+              <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">L/hari</span>
+            </div>
+          </label>
+          <label class="block space-y-2 text-sm font-medium text-slate-300">
+            Persentase air menjadi air limbah
+            <div class="relative">
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="5"
+                x-model.number="wastewaterPercent"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-12 text-white focus:border-emerald-500 focus:outline-none"
+              />
+              <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">%</span>
+            </div>
+          </label>
+          <label class="block space-y-2 text-sm font-medium text-slate-300">
+            Faktor debit puncak
+            <input
+              type="number"
+              min="1"
+              step="0.1"
+              x-model.number="peakFactor"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white focus:border-emerald-500 focus:outline-none"
+            />
+          </label>
+          <p class="rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-xs leading-relaxed text-slate-400">
+            Persentase air limbah dan faktor puncak adalah asumsi estimasi yang dapat diubah. Tentukan nilai desain dari data pemakaian dan ketentuan proyek.
+          </p>
+        </div>
+
+        <div class="no-scrollbar space-y-4 rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-800 to-slate-900 p-5 shadow-2xl md:h-full md:overflow-y-auto">
+          <h2 class="border-b border-slate-700 pb-3 text-sm font-bold text-emerald-400">
+            Estimasi Debit Air Kotor
+          </h2>
+          <div class="rounded-xl border border-slate-700/60 bg-slate-950 p-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Debit rata-rata per hari</span>
+            <p class="mt-1 text-3xl font-black text-emerald-400">
+              <span x-text="format(dailyWastewater)"></span>
+              <span class="text-sm font-semibold text-slate-300">L/hari</span>
+            </p>
+            <p class="mt-1 text-sm text-slate-400">
+              <span x-text="formatCubic(dailyWastewater)"></span> m³/hari
+            </p>
+          </div>
+          <div class="rounded-xl border border-slate-700/60 bg-slate-950 p-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Debit rata-rata 30 hari</span>
+            <p class="mt-1 text-2xl font-black text-white">
+              <span x-text="formatCubic(monthlyWastewater)"></span>
+              <span class="text-sm font-semibold text-slate-300">m³/bulan</span>
+            </p>
+          </div>
+          <div class="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-4">
+            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-300">Estimasi debit puncak</span>
+            <p class="mt-1 text-2xl font-black text-emerald-300">
+              <span x-text="formatFlow(peakFlow)"></span>
+              <span class="text-sm font-semibold">L/detik</span>
+            </p>
+          </div>
+          <p class="text-xs leading-relaxed text-slate-400">
+            Debit puncak dihitung dari debit harian dibagi 86.400 detik dan dikalikan faktor puncak. Estimasi ini bukan pengganti perhitungan jaringan perpipaan atau instalasi pengolahan air limbah (IPAL).
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
