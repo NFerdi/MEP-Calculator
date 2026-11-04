@@ -3,33 +3,127 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalkulator Air Kotor | MEP Kalkulator</title>
+    <title>Kalkulator Air Kotor & Septic Tank | MEP Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
-    ></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
   <body class="min-h-screen bg-slate-950 font-sans text-slate-100">
     <main class="mx-auto flex w-full max-w-5xl flex-col p-4 sm:p-6 md:h-full md:min-h-0 md:p-8">
-      <header class="mb-4 shrink-0 space-y-1 border-b border-slate-800/80 pb-4">
+      <header class="mb-6 shrink-0 space-y-1 border-b border-slate-800/80 pb-4">
         <h1 class="flex items-center gap-3 text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600">♻️</span>
-          Kalkulator Air Kotor
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600"
+            >♻️</span
+          >
+          Kalkulator Air Kotor & Septic Tank
         </h1>
         <p class="text-xs text-slate-400 md:text-sm">
-          Estimasi debit air limbah domestik dari kebutuhan air bangunan.
+          Estimasi debit air limbah domestik dan rekomendasi dimensi minimal septic tank lapangan.
         </p>
       </header>
 
       <section
-        x-data="wastewaterCalculator"
+        x-data="{
+          buildingType: 'residential',
+          profiles: [
+            { id: 'residential', name: 'Gedung Hunian / Rumah Tinggal', consumption: 250, desc: 'Standar SNI rumah tinggal menengah s.d mewah.' },
+            { id: 'office', name: 'Gedung Perkantoran / Kantor', consumption: 50, desc: 'Standar pegawai kantor per hari.' },
+            { id: 'hotel', name: 'Hotel / Penginapan (per orang)', consumption: 200, desc: 'Kebutuhan air tamu hotel per hari.' },
+            { id: 'restaurant', name: 'Restoran / Rumah Makan (per kursi)', consumption: 50, desc: 'Kebutuhan air per kapasitas kursi makan.' }
+          ],
+          profileDescription: 'Standar SNI rumah tinggal menengah s.d mewah.',
+          useProfileConsumption: true,
+          occupants: 5,
+          consumption: 250,
+          wastewaterPercent: 80,
+          peakFactor: 3.0,
+          retentionDays: 3, // Waktu tinggal septic tank (hari)
+
+          applyProfile() {
+            let found = this.profiles.find(p => p.id === this.buildingType);
+            if (found) {
+              this.consumption = found.consumption;
+              this.profileDescription = found.desc;
+            }
+          },
+
+          toggleProfileConsumption() {
+            if (this.useProfileConsumption) {
+              this.applyProfile();
+            }
+          },
+
+          get dailyWastewater() {
+            return (this.occupants || 0) * (this.consumption || 0) * ((this.wastewaterPercent || 0) / 100);
+          },
+
+          get monthlyWastewater() {
+            return (this.dailyWastewater * 30) / 1000; // m3 / bulan
+          },
+
+          get peakFlow() {
+            if (!this.dailyWastewater) return 0;
+            return (this.dailyWastewater / 86400) * (this.peakFactor || 1);
+          },
+
+          // Perhitungan Septic Tank (Volume = Air Limbah Harian * Waktu Tinggal)
+          get septicVolume() {
+            return this.dailyWastewater * (this.retentionDays || 3); // Liter
+          },
+
+          get septicVolumeM3() {
+            return this.septicVolume / 1000; // m3
+          },
+
+          // Rekomendasi Dimensi (Asumsi Kedalaman Efektif Air 1.2 Meter)
+          get septicDimensions() {
+            let volM3 = this.septicVolumeM3;
+            // Minimal volume praktis lapangan dibuat 0.8 m3 (800L) untuk kenyamanan
+            if (volM3 < 0.8) volM3 = 0.8; 
+            
+            let depth = 1.2; // Kedalaman efektif air (meter)
+            let surfaceArea = volM3 / depth; // Luas penampang (m2)
+            
+            // Asumsi rasio panjang : lebar = 2 : 1
+            // Lebar = sqrt(surfaceArea / 2)
+            let width = Math.sqrt(surfaceArea / 2);
+            let length = width * 2;
+
+            // Pembulatan rapi ke kelipatan 5 cm terdekat (0.05m)
+            length = Math.max(1.0, Math.ceil(length * 20) / 20);
+            width = Math.max(0.6, Math.ceil(width * 20) / 20);
+            depth = 1.2;
+
+            let actualVol = length * width * depth;
+
+            return {
+              length: length.toFixed(2),
+              width: width.toFixed(2),
+              depth: depth.toFixed(2),
+              actualCapacity: Math.round(actualVol * 1000)
+            };
+          },
+
+          format(val) {
+            return Math.round(val).toLocaleString('id-ID');
+          },
+          formatCubic(val) {
+            return (val / 1000).toFixed(2);
+          },
+          formatFlow(val) {
+            return val.toFixed(3);
+          }
+        }"
         class="grid grid-cols-1 gap-6 md:min-h-0 md:flex-1 md:grid-cols-2"
       >
-        <div class="no-scrollbar space-y-5 rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl md:h-full md:overflow-y-auto">
+        <!-- PANEL INPUT -->
+        <div
+          class="no-scrollbar space-y-5 rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl md:h-full md:overflow-y-auto"
+        >
           <h2 class="border-b border-slate-800 pb-3 text-sm font-bold text-emerald-400">
-            Parameter Estimasi Air Limbah
+            Parameter Estimasi Air Limbah & Septic Tank
           </h2>
+
           <label class="block space-y-2 text-sm font-medium text-slate-300">
             Tipe bangunan
             <select
@@ -42,11 +136,15 @@
               </template>
             </select>
           </label>
+
           <p
             class="rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-3 text-xs leading-relaxed text-emerald-100/80"
             x-text="profileDescription"
           ></p>
-          <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-sm text-slate-300">
+
+          <label
+            class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-sm text-slate-300"
+          >
             <input
               type="checkbox"
               x-model="useProfileConsumption"
@@ -58,6 +156,7 @@
               <span class="mt-1 block text-xs text-slate-400">Lepas centang untuk mengisi konsumsi secara manual.</span>
             </span>
           </label>
+
           <label class="block space-y-2 text-sm font-medium text-slate-300">
             Jumlah penghuni / pengguna per hari
             <div class="relative">
@@ -71,6 +170,7 @@
               <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">orang</span>
             </div>
           </label>
+
           <label class="block space-y-2 text-sm font-medium text-slate-300">
             Kebutuhan air bersih per orang per hari
             <div class="relative">
@@ -83,9 +183,12 @@
                 :class="useProfileConsumption ? 'cursor-not-allowed opacity-60' : ''"
                 class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-16 text-white focus:border-emerald-500 focus:outline-none disabled:focus:border-slate-700"
               />
-              <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">L/hari</span>
+              <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400"
+                >L/hari</span
+              >
             </div>
           </label>
+
           <label class="block space-y-2 text-sm font-medium text-slate-300">
             Persentase air menjadi air limbah
             <div class="relative">
@@ -100,51 +203,96 @@
               <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">%</span>
             </div>
           </label>
+
           <label class="block space-y-2 text-sm font-medium text-slate-300">
-            Faktor debit puncak
-            <input
-              type="number"
-              min="1"
-              step="0.1"
-              x-model.number="peakFactor"
-              class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white focus:border-emerald-500 focus:outline-none"
-            />
+            Waktu tinggal septic tank (Retention Time)
+            <div class="relative">
+              <input
+                type="number"
+                min="1"
+                max="7"
+                step="1"
+                x-model.number="retentionDays"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 pr-16 text-white focus:border-emerald-500 focus:outline-none"
+              />
+              <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-400">hari</span>
+            </div>
+            <span class="text-[11px] text-slate-400">Standar SNI: 2 s.d 3 hari proses pengendapan.</span>
           </label>
-          <p class="rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-xs leading-relaxed text-slate-400">
-            Persentase air limbah dan faktor puncak adalah asumsi estimasi yang dapat diubah. Tentukan nilai desain dari data pemakaian dan ketentuan proyek.
-          </p>
         </div>
 
-        <div class="no-scrollbar space-y-4 rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-800 to-slate-900 p-5 shadow-2xl md:h-full md:overflow-y-auto">
+        <!-- PANEL OUTPUT & REKOMENDASI DIMENSI -->
+        <div
+          class="no-scrollbar space-y-4 rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-800 to-slate-900 p-5 shadow-2xl md:h-full md:overflow-y-auto"
+        >
           <h2 class="border-b border-slate-700 pb-3 text-sm font-bold text-emerald-400">
-            Estimasi Debit Air Kotor
+            Hasil Estimasi & Dimensi Septic Tank
           </h2>
-          <div class="rounded-xl border border-slate-700/60 bg-slate-950 p-4">
-            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Debit rata-rata per hari</span>
-            <p class="mt-1 text-3xl font-black text-emerald-400">
-              <span x-text="format(dailyWastewater)"></span>
-              <span class="text-sm font-semibold text-slate-300">L/hari</span>
-            </p>
-            <p class="mt-1 text-sm text-slate-400">
-              <span x-text="formatCubic(dailyWastewater)"></span> m³/hari
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="rounded-xl border border-slate-700/60 bg-slate-950 p-4">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Debit Limbah Harian</span>
+              <p class="mt-1 text-2xl font-black text-emerald-400">
+                <span x-text="format(dailyWastewater)"></span> <span class="text-xs">L/hari</span>
+              </p>
+            </div>
+            <div class="rounded-xl border border-slate-700/60 bg-slate-950 p-4">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Volume Septic Tank</span>
+              <p class="mt-1 text-2xl font-black text-white">
+                <span x-text="format(septicVolume)"></span> <span class="text-xs">Liter</span>
+              </p>
+              <p class="text-xs text-slate-400"><span x-text="septicVolumeM3.toFixed(2)"></span> m³</p>
+            </div>
+          </div>
+
+          <!-- KOTAK REKOMENDASI DIMENSI LAPANGAN -->
+          <div class="rounded-xl border border-emerald-500/40 bg-emerald-950/20 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-300"
+                >Rekomendasi Dimensi Bersih Lapangan</span
+              >
+              <span class="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] text-emerald-300"
+                >Standar 2 Kompartemen</span
+              >
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Panjang</span>
+                <span class="text-lg font-bold text-white"><span x-text="septicDimensions.length"></span> m</span>
+              </div>
+              <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Lebar</span>
+                <span class="text-lg font-bold text-white"><span x-text="septicDimensions.width"></span> m</span>
+              </div>
+              <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-[10px] text-slate-400 block">Kedalaman Air</span>
+                <span class="text-lg font-bold text-white"><span x-text="septicDimensions.depth"></span> m</span>
+              </div>
+            </div>
+
+            <p class="text-xs leading-relaxed text-slate-300 pt-1">
+              💡 <strong class="text-emerald-300">Catatan Konstruksi:</strong> Kapasitas terhitung dari dimensi di atas
+              adalah
+              <strong class="text-white" x-text="septicDimensions.actualCapacity.toLocaleString('id-ID')"></strong>
+              Liter. Sebaiknya bagi bangunan bak menjadi **2 ruang** (2/3 bagian untuk ruang pengendapan awal dan 1/3
+              bagian untuk ruang filtrasi/luapan) sebelum dialirkan ke sumur resapan.
             </p>
           </div>
+
           <div class="rounded-xl border border-slate-700/60 bg-slate-950 p-4">
-            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Debit rata-rata 30 hari</span>
-            <p class="mt-1 text-2xl font-black text-white">
-              <span x-text="formatCubic(monthlyWastewater)"></span>
-              <span class="text-sm font-semibold text-slate-300">m³/bulan</span>
-            </p>
-          </div>
-          <div class="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-4">
-            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-300">Estimasi debit puncak</span>
-            <p class="mt-1 text-2xl font-black text-emerald-300">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400"
+              >Estimasi Debit Puncak (Peak Flow)</span
+            >
+            <p class="mt-1 text-xl font-black text-emerald-300">
               <span x-text="formatFlow(peakFlow)"></span>
-              <span class="text-sm font-semibold">L/detik</span>
+              <span class="text-xs font-semibold text-slate-300">L/detik</span>
             </p>
           </div>
-          <p class="text-xs leading-relaxed text-slate-400">
-            Debit puncak dihitung dari debit harian dibagi 86.400 detik dan dikalikan faktor puncak. Estimasi ini bukan pengganti perhitungan jaringan perpipaan atau instalasi pengolahan air limbah (IPAL).
+
+          <p class="text-[11px] leading-relaxed text-slate-400">
+            Perhitungan ini dirancang khusus untuk kebutuhan perencanaan awal (*pre-design*) MEP arsitektur dan sipil
+            sesuai kaidah SNI domestik.
           </p>
         </div>
       </section>
